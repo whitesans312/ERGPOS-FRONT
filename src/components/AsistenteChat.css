@@ -1,0 +1,312 @@
+.asistente-chat {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 300;
+    font-family: inherit;
+}
+
+.asistente-fab {
+    width: 54px;
+    height: 54px;
+    border: 0;
+    border-radius: 16px;
+    background: #0f766e;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.28);
+    transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.asistente-fab:hover {
+    background: #115e59;
+    transform: translateY(-2px);
+}
+
+.asistente-fab svg {
+    width: 25px;
+    height: 25px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.asistente-panel {
+    position: absolute;
+    right: 0;
+    bottom: 68px;
+    width: min(380px, calc(100vw - 28px));
+    height: min(580px, calc(100vh - 110px));
+    min-height: 420px;
+    background: #f8fafc;
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 22px 55px rgba(15, 23, 42, 0.28);
+    display: flex;
+    flex-direction: column;
+    animation: asistenteIn 0.16s ease;
+}
+
+@keyframes asistenteIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.asistente-header {
+    min-height: 62px;
+    padding: 0 14px 0 16px;
+    background: #111827;
+    color: #f9fafb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.asistente-header h2 {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.15;
+    font-weight: 800;
+}
+
+.asistente-header span {
+    display: block;
+    margin-top: 2px;
+    color: #9ca3af;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.asistente-icon-btn {
+    width: 34px;
+    height: 34px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #f9fafb;
+    cursor: pointer;
+    font-size: 1.35rem;
+    line-height: 1;
+}
+
+.asistente-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.asistente-mensajes {
+    flex: 1;
+    padding: 16px 14px;
+    overflow-y: auto;
+    background: #eef2f7;
+}
+
+.asistente-mensajes::-webkit-scrollbar {
+    width: 6px;
+}
+
+.asistente-mensajes::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.asistente-mensajes::-webkit-scrollbar-thumb {
+    background: rgba(71, 85, 105, 0.28);
+    border-radius: 999px;
+}
+
+.asistente-mensaje {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 12px;
+}
+
+.asistente-mensaje--usuario {
+    align-items: flex-end;
+}
+
+.asistente-mensaje--bot {
+    align-items: flex-start;
+}
+
+.asistente-burbuja {
+    max-width: min(310px, 86%);
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    color: #18202f;
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 2px 7px rgba(15, 23, 42, 0.06);
+    overflow-wrap: anywhere;
+}
+
+.asistente-mensaje--usuario .asistente-burbuja {
+    background: #0f766e;
+    color: #ffffff;
+    border-color: #0f766e;
+}
+
+.asistente-burbuja strong {
+    font-weight: 800;
+}
+
+.asistente-burbuja code {
+    padding: 1px 5px;
+    border-radius: 5px;
+    background: rgba(15, 23, 42, 0.08);
+    font-size: 0.82em;
+}
+
+.asistente-mensaje--usuario .asistente-burbuja code {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.asistente-fuente {
+    font-size: 0.66rem;
+    font-weight: 800;
+    color: #475569;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 999px;
+    padding: 2px 7px;
+}
+
+.asistente-fuente--groq {
+    color: #6d28d9;
+}
+
+.asistente-fuente--interno {
+    color: #047857;
+}
+
+.asistente-fuente--fallback {
+    color: #b45309;
+}
+
+.asistente-fuente--error {
+    color: #b91c1c;
+}
+
+.asistente-burbuja--typing {
+    width: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.asistente-burbuja--typing span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #64748b;
+    animation: typingPulse 1s infinite ease-in-out;
+}
+
+.asistente-burbuja--typing span:nth-child(2) {
+    animation-delay: 0.14s;
+}
+
+.asistente-burbuja--typing span:nth-child(3) {
+    animation-delay: 0.28s;
+}
+
+@keyframes typingPulse {
+    0%,
+    80%,
+    100% {
+        opacity: 0.35;
+        transform: translateY(0);
+    }
+
+    40% {
+        opacity: 1;
+        transform: translateY(-3px);
+    }
+}
+
+.asistente-form {
+    min-height: 62px;
+    padding: 10px;
+    background: #ffffff;
+    border-top: 1px solid rgba(15, 23, 42, 0.1);
+    display: grid;
+    grid-template-columns: 1fr 42px;
+    gap: 8px;
+}
+
+.asistente-form input {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0 12px;
+    font-size: 0.88rem;
+    color: #111827;
+    outline: none;
+}
+
+.asistente-form input:focus {
+    border-color: #0f766e;
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+}
+
+.asistente-form button {
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 8px;
+    background: #0f766e;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.asistente-form button:disabled {
+    cursor: not-allowed;
+    background: #94a3b8;
+}
+
+.asistente-form button svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+@media (max-width: 520px) {
+    .asistente-chat {
+        right: 14px;
+        bottom: 14px;
+    }
+
+    .asistente-panel {
+        position: fixed;
+        inset: 76px 10px 78px 10px;
+        width: auto;
+        height: auto;
+        min-height: 0;
+    }
+
+    .asistente-fab {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+    }
+}
