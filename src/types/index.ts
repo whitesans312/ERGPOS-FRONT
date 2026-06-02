@@ -134,7 +134,7 @@ export interface Venta {
     id: string;
     clienteNombre: string;
     clienteTelefono?: string;
-    cliente?: { id: string; nombre: string };
+    cliente?: { id: string; nombre: string; documento?: string; telefono?: string };
     vendedor?: { id: string; nombre: string };
     estado: 'PENDIENTE' | 'COMPLETADA' | 'CANCELADA';
     total: number;
