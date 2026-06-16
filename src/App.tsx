@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+﻿import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Usuarios from './pages/Usuarios';
@@ -18,6 +18,12 @@ import AsistenteChat from './components/AsistenteChat';
 import ProtectedRoute from './components/ProtectedRoute';
 import Auditoria from './pages/Auditoria';
 import DevolucionesGarantias from './pages/DevolucionesGarantias';
+import CajaRegistro from './pages/CajaRegistro';
+import AnaliticaInventario from './pages/AnaliticaInventario';
+import AnaliticaTecnicos from './pages/AnaliticaTecnicos';
+import FlujoCaja from './pages/FlujoCaja';
+import VentasPorVendedor from './pages/VentasPorVendedor';
+import RentabilidadCategoria from './pages/RentabilidadCategoria';
 import './App.css';
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => (
@@ -37,110 +43,144 @@ function App() {
           {/* LOGIN */}
           <Route path="/" element={<Login />} />
 
-          {/* DASHBOARD — todos los roles */}
+          {/* DASHBOARD â€” todos los roles */}
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <MainLayout><Dashboard /></MainLayout>
             </ProtectedRoute>
           } />
 
-          {/* PERFIL — todos los roles */}
+          {/* PERFIL â€” todos los roles */}
           <Route path="/perfil" element={
             <ProtectedRoute>
               <MainLayout><Perfil /></MainLayout>
             </ProtectedRoute>
           } />
 
-          {/* USUARIOS — solo ADMIN */}
+          {/* USUARIOS â€” solo ADMIN */}
           <Route path="/usuarios" element={
             <ProtectedRoute roles={['ADMIN']}>
               <MainLayout><Usuarios /></MainLayout>
             </ProtectedRoute>
           } />
 
-          {/* CLIENTES — ADMIN y VENDEDOR */}
+          {/* CLIENTES â€” ADMIN y VENDEDOR */}
           <Route path="/clientes" element={
             <ProtectedRoute roles={['ADMIN', 'VENDEDOR']}>
               <MainLayout><Clientes /></MainLayout>
             </ProtectedRoute>
           } />
 
-          {/* PRODUCTOS — ADMIN, INVENTARIO, VENDEDOR, TECNICO */}
+          {/* PRODUCTOS â€” ADMIN, INVENTARIO, VENDEDOR, TECNICO */}
           <Route path="/productos" element={
             <ProtectedRoute roles={['ADMIN', 'INVENTARIO', 'VENDEDOR', 'TECNICO']}>
               <MainLayout><Productos /></MainLayout>
             </ProtectedRoute>
           } />
 
-          {/* MOVIMIENTOS — ADMIN e INVENTARIO */}
+          {/* MOVIMIENTOS â€” ADMIN e INVENTARIO */}
           <Route path="/movimientos" element={
             <ProtectedRoute roles={['ADMIN', 'INVENTARIO']}>
               <MainLayout><Movimientos /></MainLayout>
             </ProtectedRoute>
           } />
 
-          {/* VENTAS — ADMIN y VENDEDOR */}
+          {/* VENTAS â€” ADMIN y VENDEDOR */}
           <Route path="/ventas" element={
             <ProtectedRoute roles={['ADMIN', 'VENDEDOR']}>
               <MainLayout><Ventas /></MainLayout>
             </ProtectedRoute>
           } />
 
-          {/* DEVOLUCIONES / GARANTIAS — ADMIN, VENDEDOR y TECNICO */}
+          {/* DEVOLUCIONES / GARANTIAS â€” ADMIN, VENDEDOR y TECNICO */}
           <Route path="/devoluciones-garantias" element={
             <ProtectedRoute roles={['ADMIN', 'VENDEDOR', 'TECNICO']}>
               <MainLayout><DevolucionesGarantias /></MainLayout>
             </ProtectedRoute>
           } />
 
-          {/* ÓRDENES DE SERVICIO — ADMIN y TECNICO */}
+          {/* Ã“RDENES DE SERVICIO â€” ADMIN y TECNICO */}
           <Route path="/entregas" element={
             <ProtectedRoute roles={['ADMIN', 'TECNICO']}>
               <MainLayout><Entregas /></MainLayout>
             </ProtectedRoute>
           } />
 
-          {/* PROVEEDORES — ADMIN e INVENTARIO */}
+          {/* PROVEEDORES â€” ADMIN e INVENTARIO */}
           <Route path="/proveedores" element={
             <ProtectedRoute roles={['ADMIN', 'INVENTARIO']}>
               <MainLayout><Proveedores /></MainLayout>
             </ProtectedRoute>
           } />
 
-          {/* COMPRAS — ADMIN e INVENTARIO */}
+          {/* COMPRAS â€” ADMIN e INVENTARIO */}
           <Route path="/compras" element={
             <ProtectedRoute roles={['ADMIN', 'INVENTARIO']}>
               <MainLayout><Compras /></MainLayout>
             </ProtectedRoute>
           } />
 
-          {/* KARDEX — ADMIN e INVENTARIO */}
+          {/* KARDEX â€” ADMIN e INVENTARIO */}
           <Route path="/kardex" element={
             <ProtectedRoute roles={['ADMIN', 'INVENTARIO']}>
               <MainLayout><Kardex /></MainLayout>
             </ProtectedRoute>
           } />
 
-          {/* REPORTES — solo ADMIN */}
+          {/* REPORTES â€” solo ADMIN */}
           <Route path="/reportes" element={
             <ProtectedRoute roles={['ADMIN']}>
               <MainLayout><Reportes /></MainLayout>
             </ProtectedRoute>
           } />
 
-          {/* CONFIGURACIÓN — solo ADMIN */}
+          {/* CONFIGURACIÃ“N â€” solo ADMIN */}
           <Route path="/configuracion" element={
             <ProtectedRoute roles={['ADMIN']}>
               <MainLayout><Configuracion /></MainLayout>
             </ProtectedRoute>
           } />
 
-          {/* AUDITORÍA — solo ADMIN */}
+          {/* AUDITORÃA â€” solo ADMIN */}
           <Route path="/auditoria" element={
             <ProtectedRoute roles={['ADMIN']}>
               <MainLayout><Auditoria /></MainLayout>
             </ProtectedRoute>
           } />
+          {/* CAJA */}
+          <Route path="/caja" element={
+            <ProtectedRoute roles={['ADMIN', 'VENDEDOR']}>
+              <MainLayout><CajaRegistro /></MainLayout>
+            </ProtectedRoute>
+          } />
+
+          {/* ANALITICA AVANZADA */}
+          <Route path="/analitica/inventario" element={
+            <ProtectedRoute roles={['ADMIN']}>
+              <MainLayout><AnaliticaInventario /></MainLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/analitica/tecnicos" element={
+            <ProtectedRoute roles={['ADMIN']}>
+              <MainLayout><AnaliticaTecnicos /></MainLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/analitica/flujo-caja" element={
+            <ProtectedRoute roles={['ADMIN']}>
+              <MainLayout><FlujoCaja /></MainLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/reportes/vendedores" element={
+            <ProtectedRoute roles={['ADMIN']}>
+              <MainLayout><VentasPorVendedor /></MainLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/reportes/rentabilidad" element={
+            <ProtectedRoute roles={['ADMIN']}>
+              <MainLayout><RentabilidadCategoria /></MainLayout>
+            </ProtectedRoute>
+          } />
+
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" />} />
@@ -152,3 +192,4 @@ function App() {
 }
 
 export default App;
+

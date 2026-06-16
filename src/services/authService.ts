@@ -24,6 +24,19 @@ export const authService = {
         }
     },
 
+    async refreshToken(): Promise<string> {
+        const response = await api.post('/auth/refresh');
+        const { token, expiresInMs } = response.data;
+        localStorage.setItem(TOKEN_KEY, token);
+        localStorage.setItem(TOKEN_EXPIRES_AT_KEY, String(Date.now() + expiresInMs));
+        return token;
+    },
+
+    getTimeToExpiry(): number {
+        const expiresAt = Number(localStorage.getItem(TOKEN_EXPIRES_AT_KEY) || 0);
+        return Math.max(0, expiresAt - Date.now());
+    },
+
     isAuthenticated(): boolean {
         const user = localStorage.getItem(USER_KEY);
         const token = localStorage.getItem(TOKEN_KEY);

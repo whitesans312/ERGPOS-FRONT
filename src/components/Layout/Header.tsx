@@ -52,6 +52,9 @@ Object.assign(ACCION_ICON, {
 const formatHora = (iso: string) =>
     new Date(iso).toLocaleString('es-CO', { hour: '2-digit', minute: '2-digit', hour12: true });
 
+/** Umbral en ms para mostrar el aviso de sesión próxima a expirar */
+const SESSION_WARN_MS = 5 * 60 * 1000; // 5 minutos
+
 const Header: React.FC = () => {
     const user = authService.getUser();
     const [menuOpen, setMenuOpen] = useState(false);
@@ -59,11 +62,45 @@ const Header: React.FC = () => {
     const [auditOpen, setAuditOpen] = useState(false);
     const [resumen, setResumen] = useState<DashboardResumen | null>(null);
     const [auditEntries, setAuditEntries] = useState<AuditoriaEntry[]>([]);
+    const [sessionWarning, setSessionWarning] = useState(false);
+    const [sessionSecondsLeft, setSessionSecondsLeft] = useState(0);
+    const [refreshingSession, setRefreshingSession] = useState(false);
     const navigate = useNavigate();
     const dropdownRef = useRef<HTMLDivElement>(null);
     const bellRef = useRef<HTMLDivElement>(null);
     const auditRef = useRef<HTMLDivElement>(null);
     const isAdmin = user?.rol?.nombre === 'ADMIN';
+
+    // ── Monitor de expiración de sesión (HU10) ─────────────────────────────────
+    useEffect(() => {
+        const check = () => {
+            const remaining = authService.getTimeToExpiry();
+            if (remaining > 0 && remaining <= SESSION_WARN_MS) {
+                setSessionWarning(true);
+                setSessionSecondsLeft(Math.ceil(remaining / 1000));
+            } else {
+                setSessionWarning(false);
+            }
+        };
+        check();
+        const interval = setInterval(check, 30_000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const handleRenewSession = async () => {
+        setRefreshingSession(true);
+        try {
+            await authService.refreshToken();
+            setSessionWarning(false);
+        } catch {
+            // Si falla el refresh, cerrar sesión
+            await authService.logoutRemote();
+            authService.logout();
+            navigate('/');
+        } finally {
+            setRefreshingSession(false);
+        }
+    };
 
     // Cerrar menús al hacer click fuera
     useEffect(() => {
@@ -147,7 +184,58 @@ const Header: React.FC = () => {
     };
 
     return (
-        <header className="app-header">
+        <>
+        {/* ── Banner de sesión próxima a expirar (HU10) ────────────────────────── */}
+        {sessionWarning && (
+            <div id="session-expiry-banner" style={{
+                position: 'fixed', top: 0, left: 0, right: 0, zIndex: 10000,
+                background: 'linear-gradient(90deg, #92400e, #b45309)',
+                color: '#fef3c7',
+                padding: '0.55rem 1.25rem',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                gap: '1rem', fontSize: '0.84rem', fontWeight: '600',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+                animation: 'slideDown 0.3s ease',
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                    <span style={{ fontSize: '1rem' }}>⚠️</span>
+                    <span>
+                        Tu sesión expirará en{' '}
+                        <strong>{Math.floor(sessionSecondsLeft / 60)}:{String(sessionSecondsLeft % 60).padStart(2, '0')} min</strong>.
+                        Guarda tu trabajo.
+                    </span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
+                    <button
+                        id="session-renew-btn"
+                        onClick={handleRenewSession}
+                        disabled={refreshingSession}
+                        style={{
+                            background: '#fef3c7', color: '#92400e',
+                            border: 'none', borderRadius: '8px',
+                            padding: '0.3rem 0.85rem', fontWeight: '700',
+                            fontSize: '0.82rem', cursor: 'pointer',
+                            opacity: refreshingSession ? 0.7 : 1,
+                        }}
+                    >
+                        {refreshingSession ? '⏳ Renovando...' : '🔄 Renovar sesión'}
+                    </button>
+                    <button
+                        id="session-logout-btn"
+                        onClick={handleLogout}
+                        style={{
+                            background: 'rgba(0,0,0,0.25)', color: '#fef3c7',
+                            border: '1px solid rgba(255,255,255,0.3)', borderRadius: '8px',
+                            padding: '0.3rem 0.85rem', fontWeight: '600',
+                            fontSize: '0.82rem', cursor: 'pointer',
+                        }}
+                    >
+                        Cerrar sesión
+                    </button>
+                </div>
+            </div>
+        )}
+        <header className="app-header" style={sessionWarning ? { marginTop: '2.5rem' } : {}}>
             <div className="header-inner">
                 {/* MARCA */}
                 <div className="header-brand" style={{ cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>
@@ -340,6 +428,31 @@ const Header: React.FC = () => {
                                 </button>
 
                                 {user?.rol?.nombre === 'ADMIN' && (
+                                    <>
+                                        <button className="dropdown-item" onClick={() => handleNavigate('/analitica/flujo-caja')}>
+                                            <span>%</span>
+                                            <span>Flujo de caja</span>
+                                        </button>
+                                        <button className="dropdown-item" onClick={() => handleNavigate('/analitica/inventario')}>
+                                            <span>%</span>
+                                            <span>Analitica inventario</span>
+                                        </button>
+                                        <button className="dropdown-item" onClick={() => handleNavigate('/analitica/tecnicos')}>
+                                            <span>%</span>
+                                            <span>Analitica tecnicos</span>
+                                        </button>
+                                        <button className="dropdown-item" onClick={() => handleNavigate('/reportes/vendedores')}>
+                                            <span>%</span>
+                                            <span>Ventas por vendedor</span>
+                                        </button>
+                                        <button className="dropdown-item" onClick={() => handleNavigate('/reportes/rentabilidad')}>
+                                            <span>%</span>
+                                            <span>Rentabilidad</span>
+                                        </button>
+                                    </>
+                                )}
+
+                                {user?.rol?.nombre === 'ADMIN' && (
                                     <button className="dropdown-item" onClick={() => handleNavigate('/movimientos')}>
                                         <span>🔄</span>
                                         <span>Movimientos</span>
@@ -358,6 +471,7 @@ const Header: React.FC = () => {
                 </div>
             </div>
         </header>
+        </>
     );
 };
 
