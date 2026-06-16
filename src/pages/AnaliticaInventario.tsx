@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { getPrediccionStock, getProductosSinMovimiento, type PrediccionStock, type ProductoSinMovimiento } from '../services/analiticaService';
 
 const pct = (value: number, total: number) => total > 0 ? Math.round((value / total) * 100) : 0;
@@ -21,6 +21,7 @@ const AnaliticaInventario: React.FC = () => {
   const [prediccion, setPrediccion] = useState<PrediccionStock[]>([]);
   const [sinMovimiento, setSinMovimiento] = useState<ProductoSinMovimiento[]>([]);
   const [dias, setDias] = useState(30);
+  const [inputDias, setInputDias] = useState(30);
   const [loading, setLoading] = useState(true);
 
   const cargar = async () => {
@@ -75,7 +76,36 @@ const AnaliticaInventario: React.FC = () => {
         </table>
       </div>
 
-      <div className="card"><div className="card-body"><label>Dias sin movimiento <input type="number" value={dias} onChange={e => setDias(Number(e.target.value) || 30)} /></label></div></div>
+      <div className="card">
+        <div className="card-body" style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500', color: '#475569' }}>
+            Dias sin movimiento
+            <input 
+              type="number" 
+              value={inputDias} 
+              onChange={e => setInputDias(Number(e.target.value) || 0)} 
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  setDias(inputDias);
+                }
+              }}
+              style={{
+                padding: '0.4rem 0.6rem',
+                borderRadius: '0.375rem',
+                border: '1px solid #cbd5e1',
+                width: '80px',
+                outline: 'none'
+              }}
+            />
+          </label>
+          <button 
+            className="action-btn action-btn-primary" 
+            onClick={() => setDias(inputDias)}
+          >
+            🔍 Filtrar
+          </button>
+        </div>
+      </div>
 
       <div className="table-wrapper">
         <table className="data-table">
